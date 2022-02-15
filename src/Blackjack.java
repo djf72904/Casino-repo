@@ -4,22 +4,20 @@ import java.util.Scanner;
 public class Blackjack {
     Scanner scan = new Scanner(System.in);
     private final CardDeck[] bjDeck; // array of 6 CardDeck objects that are shuffled
-    private final ArrayList <Card> playerCards; //array list of current cards held by player
+    private Player player;
     private final ArrayList <Card> dealerCards; //array list of current cards held by dealer
     private int deckPointer; //current index of bjDeck that dealer is in 0-3
     private int cardPointer; //current index of card in current deck 0-51
-    private int playerNumValue;
     private int dealerNumValue;
     private int dealerStartValue;
     private int choice;
 
     public Blackjack(){
         bjDeck = new CardDeck[] {new CardDeck(), new CardDeck(), new CardDeck(), new CardDeck()};
-        playerCards = new ArrayList<>();
+        player = new Player();
         dealerCards = new ArrayList<>();
         deckPointer = 0;
         cardPointer = 0;
-        playerNumValue = 0;
         dealerNumValue = 0;
         dealerStartValue = 0;
         choice = 0;
@@ -40,24 +38,18 @@ public class Blackjack {
         }
     }
 
-    private void printHand(ArrayList<Card> cards){
+    private void printHand(ArrayList<Card> cards) {
         String hand = "";
         int numVal = 0;
-        if(cards.equals(playerCards)){
-            hand = "Player Cards: ";
-            numVal = playerNumValue;
+        hand = "Dealer Cards: ";
+        if (dealerCards.size() == 2) {
+            numVal = dealerStartValue;
+        } else {
+            numVal = dealerNumValue;
         }
-        if(cards.equals(dealerCards)){
-            hand = "Dealer Cards: ";
-            if(dealerCards.size() == 2) {
-                numVal = dealerStartValue;
-            }
-            else{
-                numVal = dealerNumValue;
-            }
-        }
+
         System.out.print(hand);
-        for(Card c: cards){
+        for (Card c : cards) {
             System.out.print("[" + c + "] ");
         }
         System.out.println("\nNumerical Value: " + numVal + "\n");
@@ -65,14 +57,14 @@ public class Blackjack {
 
     private void printBothHands(){
         printHand(dealerCards);
-        printHand(playerCards);
+        player.printHand();
     }
 
 
     //deals the player 2 cards for start of round. cards 1 and 3
     private void dealPlayerCard(){
         if(deckPointer<4 && cardPointer<52){
-            playerCards.add(bjDeck[deckPointer].getCard(cardPointer));
+            player.addCard(bjDeck[deckPointer].getCard(cardPointer));
             if(cardPointer<51){
                 cardPointer++;
             }
@@ -86,7 +78,7 @@ public class Blackjack {
                 cardPointer = 0;
             }
         }
-        setNumValue(playerCards);
+            player.setNumValue();
     }
     //deals dealer 2 cards for start of round. cards 2 and 4
     private void dealDealerCard(){
@@ -114,8 +106,8 @@ public class Blackjack {
     }
 
     private void dealPlayerCard(Card customCard){
-        playerCards.add(customCard);
-        setNumValue(playerCards);
+        player.addCard(customCard);
+        player.setNumValue();
     }
 
     private void setNumValue(ArrayList<Card> cards){
@@ -128,13 +120,8 @@ public class Blackjack {
                 value += Math.min(card.getNumber(), 10);
             }
         }
-        if(cards.equals(playerCards)){
-            playerNumValue = value;
-        }
-        else if(cards.equals(dealerCards)){
             dealerNumValue = value;
         }
-    }
 
     private void setDealerStartValue(){
         boolean hasAceIn2 = dealerCards.get(1).getNumber() == 1;
@@ -173,17 +160,21 @@ public class Blackjack {
 
     //deals cards to player and dealer at start of round
     private void dealStarters(){
-        dealPlayerCard();
-        dealDealerCard();
-        dealPlayerCard();
-        dealDealerCard();
+        for(int x=0; x<2; x++){
+            dealPlayerCard();
+            dealDealerCard();
+        }
         setDealerStartValue();
         printBothHands();
     }
 
+    private boolean canSplit(){
+        return player.getPlayerCardSize() == 2 && player.getCard(0).getNumber() == player.getCard(1).getNumber();
+    }
+
     private void askPlayerOptions(){
         System.out.println("Please type in the number of what action you would like to do.");
-        if(playerCards.size() == 2 && playerCards.get(0).getNumber() == playerCards.get(1).getNumber()) {
+        if(canSplit()) {
             System.out.println("\t----------------------------------------------------------");
             System.out.println("\t|    (1)Hit    (2)Double Down    (3)Stand    (4)Split    |");
             System.out.println("\t----------------------------------------------------------");
@@ -206,7 +197,7 @@ public class Blackjack {
             if (choice == 1) {
                 dealPlayerCard();
                 printBothHands();
-                if(playerNumValue>21){
+                if(player.getPlayerNumValue()>21){
                     BettingSystem.lose();
                 }
                 else if(choice!=3){

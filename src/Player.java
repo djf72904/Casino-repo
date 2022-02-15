@@ -13,6 +13,14 @@ public class Player {
         return playerNumValue;
     }
 
+    public int getPlayerCardSize(){
+        return playerCards.size();
+    }
+
+    public Card getCard(int i){
+        return playerCards.get(i);
+    }
+
     //other
     public void addCard(Card c){
         playerCards.add(c);
