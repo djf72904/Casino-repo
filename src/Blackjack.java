@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class Blackjack {
     Scanner scan = new Scanner(System.in);
     private final CardDeck[] bjDeck; // array of 6 CardDeck objects that are shuffled
-    private Player player;
+    private final Player player;
     private final ArrayList <Card> dealerCards; //array list of current cards held by dealer
     private int deckPointer; //current index of bjDeck that dealer is in 0-3
     private int cardPointer; //current index of card in current deck 0-51
