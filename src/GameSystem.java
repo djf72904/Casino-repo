@@ -1,7 +1,16 @@
 import java.util.Scanner;
 
 public class GameSystem {
-    public static void main(String[]args){
+
+    public static void main (String[]args){
+        start();
+    }
+
+
+
+
+
+    private static void start(){
         Scanner scan = new Scanner(System.in);
         Blackjack bj = new Blackjack(); //Creation of blackjack game
         String gameList = "List of Games:\n(1)Blackjack";
@@ -29,4 +38,5 @@ public class GameSystem {
 
         System.out.println("Thanks for visiting the Casino! Come again!");
     }
+
 }
