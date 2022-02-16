@@ -2,31 +2,52 @@ import java.util.ArrayList;
 
 public class Player {
     private final ArrayList <Card> playerCards; //array list of current cards held by player
-    private int playerNumValue;
+    private int playerNumValue; //numerical value of cards player has
 
+    //constructor
     public Player(){
         playerCards = new ArrayList<>();
         playerNumValue = 0;
     }
-    //Getters
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Getters
+    -----------------------------------------------------------------------------------------------------------------
+    */
+
+    //returns playerNumValue
     public int getPlayerNumValue(){
         return playerNumValue;
     }
 
+    //returns size of playerCards Array List
     public int getPlayerCardSize(){
         return playerCards.size();
     }
 
+    //returns card of playerCards at index i
     public Card getCard(int i){
         return playerCards.get(i);
     }
 
-    //other
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Instance Variables manipulation
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //deletes last card in playerCards
+    public void deleteCard(){
+        playerCards.remove(playerCards.size()-1);
+    }
+
+    //adds card on end of playerCards
     public void addCard(Card c){
         playerCards.add(c);
         setNumValue();
     }
 
+    //sets the numerical value of cards in playerCards. NOTE: face cards are worth 10 and aces are worth 11 in this implementation
     public void setNumValue(){
         playerNumValue = 0;
         for(Card card: playerCards){
@@ -39,6 +60,13 @@ public class Player {
         }
     }
 
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Output methods
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //prints playerCards hand along with Numerical Value of cards
     public void printHand(){
         String hand = "Player Cards: ";
 
@@ -48,6 +76,13 @@ public class Player {
         System.out.println(hand + "\nNumerical Value: " + playerNumValue + "\n");
     }
 
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Misc/Testing
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //main method used for testing
     public static void main(String[]args){
         Player player = new Player();
         player.addCard(new Card(1, 'C'));

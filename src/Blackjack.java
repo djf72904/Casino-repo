@@ -67,6 +67,50 @@ public class Blackjack {
         return player.getPlayerCardSize() == 2 && player.getCard(0).getNumber() == player.getCard(1).getNumber();
     }
 
+    //checks to see if player numerical value has surpassed 21
+    private boolean hasLost(){
+        return player.getPlayerNumValue()>21;
+    }
+
+    //Reset hands after round
+    private void resetHands(){
+        for(int x=0; x<=player.getPlayerCardSize(); x++) {
+            player.deleteCard();
+        }
+        for(int x=0; x<=dealer.getDealerCardSize(); x++){
+            dealer.deleteCard();
+        }
+    }
+
+    //Checks user input to be sure it stays in bounds
+    private void choiceCheck(){
+        while(!(choice>=1 && choice<=4)) {
+            System.out.println("Invalid Entry. Please enter a valid number");
+            choice = scan.nextInt();
+        }
+    }
+
+    //when choice = 1 and player hits
+    private void playerHit(){
+        dealPlayerCard();
+        printBothHands();
+        if(hasLost()){
+            BettingSystem.lose();
+            resetHands();
+        }
+    }
+
+    private void playerDoubleDown(){
+        dealPlayerCard();
+        BettingSystem.setCurrentBet(BettingSystem.getCurrentBet()*2);
+        System.out.println("New Bet: " + BettingSystem.getCurrentBet());
+        printBothHands();
+        if(hasLost()){
+            BettingSystem.lose();
+            resetHands();
+        }
+    }
+
     /*
     -----------------------------------------------------------------------------------------------------------------
     Card dealing methods
@@ -165,41 +209,17 @@ public class Blackjack {
      */
 
     private void playerTurn() {
-        choice = scan.nextInt();
-        while(!(choice>0 && choice< 5)) {
-            System.out.println("Please enter a valid number");
+        while (!hasLost() && choice !=3) {
+            askPlayerOptions();
             choice = scan.nextInt();
-        }
+            choiceCheck();
             if (choice == 1) {
-                dealPlayerCard();
-                printBothHands();
-                if(player.getPlayerNumValue()>21){
-                    BettingSystem.lose();
-                }
-                else if(choice!=3){
-                    playerTurn();
-                }
-                else{
-                    System.out.println("Dealer Turn");
-                    System.out.println("-----------");
-                    dealerTurn();
-                }
-            }
-            if(choice == 2){
-                BettingSystem.setCurrentBet(BettingSystem.getCurrentBet()*2);
-                dealPlayerCard();
-                printBothHands();
-                playerTurn();
-            }
-            if(choice == 3) {
-                printBothHands();
+                playerHit();
+            } else if (choice == 2) {
+                playerDoubleDown();
             }
         }
-
-        private void dealerTurn(){
-
-        }
-
+    }
 
     public void play(){
         BettingSystem.setMaxBet(500);
@@ -211,6 +231,7 @@ public class Blackjack {
             while(BettingSystem.getChips()>0){
                 BettingSystem.askBet();
                 dealStarters();
+                playerTurn();
             }
         }
         else{
