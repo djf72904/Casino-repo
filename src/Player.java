@@ -45,7 +45,7 @@ public class Player {
         for(Card c: playerCards){
             hand += "[" + c + "]";
         }
-        System.out.println(hand + "\nNumerical Value " + playerNumValue + "\n");
+        System.out.println(hand + "\nNumerical Value: " + playerNumValue + "\n");
     }
 
     public static void main(String[]args){
