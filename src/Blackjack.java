@@ -5,21 +5,17 @@ public class Blackjack {
     Scanner scan = new Scanner(System.in);
     private final CardDeck[] bjDeck; // array of 6 CardDeck objects that are shuffled
     private final Player player;
-    private final ArrayList <Card> dealerCards; //array list of current cards held by dealer
+    private final Dealer dealer;
     private int deckPointer; //current index of bjDeck that dealer is in 0-3
     private int cardPointer; //current index of card in current deck 0-51
-    private int dealerNumValue;
-    private int dealerStartValue;
     private int choice;
 
     public Blackjack(){
         bjDeck = new CardDeck[] {new CardDeck(), new CardDeck(), new CardDeck(), new CardDeck()};
         player = new Player();
-        dealerCards = new ArrayList<>();
+        dealer = new Dealer();
         deckPointer = 0;
         cardPointer = 0;
-        dealerNumValue = 0;
-        dealerStartValue = 0;
         choice = 0;
     }
 
@@ -38,25 +34,13 @@ public class Blackjack {
         }
     }
 
-    private void printHand(ArrayList<Card> cards) {
-        String hand = "";
-        int numVal = 0;
-        hand = "Dealer Cards: ";
-        if (dealerCards.size() == 2) {
-            numVal = dealerStartValue;
-        } else {
-            numVal = dealerNumValue;
-        }
-
-        System.out.print(hand);
-        for (Card c : cards) {
-            System.out.print("[" + c + "] ");
-        }
-        System.out.println("\nNumerical Value: " + numVal + "\n");
-    }
-
     private void printBothHands(){
-        printHand(dealerCards);
+        if(dealer.getDealerCardSize() == 2){
+            dealer.printBJStartHand();
+        }
+        else{
+            dealer.printHand();
+        }
         player.printHand();
     }
 
@@ -83,7 +67,7 @@ public class Blackjack {
     //deals dealer 2 cards for start of round. cards 2 and 4
     private void dealDealerCard(){
         if(deckPointer<4 && cardPointer<52){
-            dealerCards.add(bjDeck[deckPointer].getCard(cardPointer));
+            dealer.addCard(bjDeck[deckPointer].getCard(cardPointer));
             if(cardPointer<51){
                 cardPointer++;
             }
@@ -96,46 +80,19 @@ public class Blackjack {
                 deckPointer = 0;
                 cardPointer = 0;
             }
-            setNumValue(dealerCards);
+            dealer.setNumValue();
         }
     }
 
     private void dealDealerCard(Card customCard){
-        dealerCards.add(customCard);
-        setNumValue(dealerCards);
+        dealer.addCard(customCard);
+        dealer.setNumValue();
     }
 
     private void dealPlayerCard(Card customCard){
         player.addCard(customCard);
         player.setNumValue();
     }
-
-    private void setNumValue(ArrayList<Card> cards){
-        int value = 0;
-        for (Card card : cards) {
-            if (card.getNumber() == 1) {
-                value += 11;
-            }
-            else {
-                value += Math.min(card.getNumber(), 10);
-            }
-        }
-            dealerNumValue = value;
-        }
-
-    private void setDealerStartValue(){
-        boolean hasAceIn2 = dealerCards.get(1).getNumber() == 1;
-        if(hasAceIn2){
-            dealerStartValue = dealerNumValue - 11;
-        }
-        else if(dealerCards.get(1).getNumber()>10){
-                dealerStartValue = dealerNumValue - 10;
-            }
-        else {
-            dealerStartValue = dealerNumValue - dealerCards.get(1).getNumber();
-        }
-    }
-
 
     private boolean hasAce(ArrayList<Card> cards){
         for (Card card : cards) {
@@ -164,7 +121,6 @@ public class Blackjack {
             dealPlayerCard();
             dealDealerCard();
         }
-        setDealerStartValue();
         printBothHands();
     }
 
