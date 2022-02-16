@@ -67,21 +67,6 @@ public class Blackjack {
         return player.getPlayerCardSize() == 2 && player.getCard(0).getNumber() == player.getCard(1).getNumber();
     }
 
-    //asks player what blackjack play they would like to make. double down and split are available
-    private void askPlayerOptions(){
-        System.out.println("Please type in the number of what action you would like to do.");
-        if(canSplit()) {
-            System.out.println("\t----------------------------------------------------------");
-            System.out.println("\t|    (1)Hit    (2)Double Down    (3)Stand    (4)Split    |");
-            System.out.println("\t----------------------------------------------------------");
-        }
-        else{
-            System.out.println("\t-----------------------------------------------");
-            System.out.println("\t|    (1)Hit    (2)Double Down    (3)Stand     |");
-            System.out.println("\t-----------------------------------------------");
-        }
-    }
-
     /*
     -----------------------------------------------------------------------------------------------------------------
     Card dealing methods
@@ -134,6 +119,22 @@ public class Blackjack {
         player.printHand();
     }
 
+    //asks player what blackjack play they would like to make. double down and split are available
+    private void askPlayerOptions(){
+        System.out.println("Please type in the number of what action you would like to do.");
+        if(canSplit()) {
+            System.out.println("\t----------------------------------------------------------");
+            System.out.println("\t|    (1)Hit    (2)Double Down    (3)Stand    (4)Split    |");
+            System.out.println("\t----------------------------------------------------------");
+        }
+        else{
+            System.out.println("\t-----------------------------------------------");
+            System.out.println("\t|    (1)Hit    (2)Double Down    (3)Stand     |");
+            System.out.println("\t-----------------------------------------------");
+        }
+    }
+
+
 
     /*
     private boolean hasAce(ArrayList<Card> cards){
@@ -157,9 +158,13 @@ public class Blackjack {
     }
      */
 
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Player and Dealer Turns
+    -----------------------------------------------------------------------------------------------------------------
+     */
 
     private void playerTurn() {
-
         choice = scan.nextInt();
         while(!(choice>0 && choice< 5)) {
             System.out.println("Please enter a valid number");
