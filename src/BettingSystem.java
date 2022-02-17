@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public final class BettingSystem {
-    private static Scanner scan = new Scanner(System.in);
+    private static final Scanner scan = new Scanner(System.in);
     private static int chips = 1000; //current chips held by player
     private static int maxBet = 100; //max bet of current game
     private static int currentBet = 0; //amount bet
@@ -10,23 +10,37 @@ public final class BettingSystem {
     private BettingSystem(){
     }
 
-    //Accessors
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Getters
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //returns amount of chips player has. universal for entire casino
     public static int getChips(){
         return chips;
-    }//end getChips
+    }
 
+    //returns the max bet for given game.
     public static int getMaxBet(){
         return maxBet;
-    }//end getMaxBet
+    }
 
+    //returns the player's current entered bet
     public static int getCurrentBet(){
         return currentBet;
-    }//end getCurrentBet
+    }
 
-    //Mutators
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Instance Variable manipulation
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //sets the current bet of the player
     public static void setCurrentBet(int newBet){
         currentBet = newBet;
-    }//end setCurrentBet
+    }
 
     //asks user for bet and then sets that as currentBet
     public static void askBet(){
@@ -39,26 +53,41 @@ public final class BettingSystem {
         currentBet = bet;
     }
 
+    //sets the max bet allowed for current game
     public static void setMaxBet(int newMax){
         maxBet = newMax;
-    }//end setMaxBet
+    }
 
+    //sets the amount of chips a player has
     public static void setChips(int newChips){
         chips = newChips;
-    }//end setChips
+    }
 
-    //Win and lose methods for games
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Win, lose, and tie methods for games.
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //win method. gives the user their current bet into chips 1:1
     public static void win(){
         chips+=currentBet;
         System.out.println("You Won!\nYou have earned "+currentBet+" chips\nNew Chip total: "+chips);
         currentBet = 0;
-    }//end win
+    }
 
+    //lose method. takes the user's current bet from total chips 1:1
     public static void lose(){
         chips-=currentBet;
-        System.out.println("You Lost!\n You have lost "+currentBet+" chips.\nNew Chip total: "+chips);
+        System.out.println("You Lost!\nYou have lost "+currentBet+" chips.\nNew Chip total: "+chips);
         currentBet = 0;
-    }//end lose
+    }
+
+    //tie method. user neither gains nor loses its bet
+    public static void tie(){
+        System.out.println("It's a tie!\nYou have neither gained or lost chips.\nChip total: "+chips);
+        currentBet = 0;
+    }
 
 }
 

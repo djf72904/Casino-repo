@@ -6,6 +6,7 @@ public class CardDeck {
     private final Card [] sortedDeck = new Card[52];     //array of card objects in box order
     private Card [] shuffledDeck;   // array of card objects shuffled
 
+    //constructor
     public CardDeck(){
         //Set cards for hearts
         for(int x=0; x<13; x++)
@@ -27,19 +28,40 @@ public class CardDeck {
         {
             sortedDeck[x + 39] = new Card(x + 1, 'S');
         }
-    }//end CardDeck Constructor
-
-    public Card getCard(int x){
-        return shuffledDeck[x];
     }
 
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Getters
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //returns card in shuffled deck at index i
+    public Card getCard(int i){
+        return shuffledDeck[i];
+    }
+
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Instance variable manipulation
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //creates a shuffled deck out of the sorted deck
     public void setShuffledDeck() {
         shuffledDeck = sortedDeck.clone();
         List<Card> cardList = Arrays.asList(shuffledDeck);
         Collections.shuffle(cardList);
         cardList.toArray(shuffledDeck);
-    }//end setShuffledDeck
+    }
 
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Output methods
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //prints a sorted deck of cards
     public void printSorted(){
         for(Card c: sortedDeck)
         {
@@ -48,18 +70,18 @@ public class CardDeck {
             if(c.getNumber()==13)
                 System.out.println();
         }
-    }//end printSorted
+    }
 
+    //prints a shuffled deck of cards
     public void printShuffled(){
         int count = 1; //keeps track of how many cards in row
-        for(int x=0; x<shuffledDeck.length; x++){
-            System.out.print(shuffledDeck[x] + "\t");
+        for (Card c : shuffledDeck) {
+            System.out.print(c + "\t");
             count++;
             //enters down after 1 cards are printed
-            if(count%13==1)
+            if (count % 13 == 1)
                 System.out.println();
         }
-    }//end printShuffled
-
-}//end CarDeck
+    }
+}
 

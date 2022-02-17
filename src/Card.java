@@ -2,22 +2,35 @@ public class Card {
     private int number;     //card number
     private char suit;      //card suit
 
+    //constructor
     public Card(int number, char suit) {
         this.number = number;
         this.suit = suit;
-    }//end Card Constructor
+    }
 
-    //Accessors
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Getters
+    -----------------------------------------------------------------------------------------------------------------
+     */
 
+    //returns number of Card
     public int getNumber(){
         return this.number;
-    }//end getNumber
+    }
 
+    //returns suit of Card
     public char getSuit(){
         return this.suit;
-    }//end getSuit
+    }
 
-    //toString
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Output methods
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //allows the card to be printed out with number or letter and suit
     public String toString() {
         //changes 11 to J, 12 to Q, and 13 to K.
         if (this.number==1)
@@ -30,5 +43,5 @@ public class Card {
             return "K"+this.suit;
         else
             return ""+this.number+this.suit;
-    }//end toString
-}//end Card
+    }
+}

@@ -14,8 +14,8 @@ public class Blackjack {
         bjDeck = new CardDeck[] {new CardDeck(), new CardDeck(), new CardDeck(), new CardDeck()};
         player = new Player();
         dealer = new Dealer();
-        deckPointer = 3;
-        cardPointer = 50;
+        deckPointer = 0;
+        cardPointer = 0;
         choice = 0;
     }
 
@@ -68,16 +68,21 @@ public class Blackjack {
     }
 
     //checks to see if player numerical value has surpassed 21
-    private boolean hasLost(){
+    private boolean playerGoneOver(){
         return player.getPlayerNumValue()>21;
+    }
+
+    //checks to see if dealer numerical value has surpassed 21
+    private boolean dealerGoneOver(){
+        return dealer.getDealerNumValue()>21;
     }
 
     //Reset hands after round
     private void resetHands(){
-        for(int x=0; x<=player.getPlayerCardSize(); x++) {
+        for(int x=player.getPlayerCardSize()-1; x>=0; x--) {
             player.deleteCard();
         }
-        for(int x=0; x<=dealer.getDealerCardSize(); x++){
+        for(int x=dealer.getDealerCardSize()-1; x>=0; x--){
             dealer.deleteCard();
         }
     }
@@ -93,23 +98,50 @@ public class Blackjack {
     //when choice = 1 and player hits
     private void playerHit(){
         dealPlayerCard();
-        printBothHands();
-        if(hasLost()){
+        if(playerGoneOver()){
+            printBothHands();
+            BettingSystem.lose();
+        }
+        else{
+            printBothStarterHands();
+        }
+    }
+
+    //when choice = 2 and player double downs
+    private void playerDoubleDown(){
+        dealPlayerCard();
+        BettingSystem.setCurrentBet(BettingSystem.getCurrentBet()*2);
+        System.out.println("New Bet: " + BettingSystem.getCurrentBet());
+        printBothStarterHands();
+        if(playerGoneOver()){
             BettingSystem.lose();
             resetHands();
         }
     }
 
-    private void playerDoubleDown(){
-        dealPlayerCard();
-        BettingSystem.setCurrentBet(BettingSystem.getCurrentBet()*2);
-        System.out.println("New Bet: " + BettingSystem.getCurrentBet());
+    //gives the dealer a card
+    private void dealerHit(){
+        dealDealerCard();
         printBothHands();
-        if(hasLost()){
-            BettingSystem.lose();
-            resetHands();
+        System.out.println("-----------------------------------------------------------------------------------------");
+        if(dealerGoneOver()){
+            BettingSystem.win();
         }
     }
+
+    //compares both numerical values and decides who wins
+    private void compareHands(){
+        if(dealer.getDealerNumValue()>player.getPlayerNumValue()){
+            BettingSystem.lose();
+        }
+        else if(dealer.getDealerNumValue()<player.getPlayerNumValue()){
+            BettingSystem.win();
+        }
+        else{
+            BettingSystem.tie();
+        }
+    }
+
 
     /*
     -----------------------------------------------------------------------------------------------------------------
@@ -136,7 +168,7 @@ public class Blackjack {
             dealPlayerCard();
             dealDealerCard();
         }
-        printBothHands();
+        printBothStarterHands();
     }
 
     /*
@@ -152,14 +184,15 @@ public class Blackjack {
         }
     }
 
-    //prints both bj hands. if first time printing will print the dealer start hand with missing 2nd card
+    //prints both bj hands for start, hiding the dealer's second card
+    private void printBothStarterHands(){
+        dealer.printBJStartHand();
+        player.printHand();
+    }
+
+    //prints both hands with full transparency
     private void printBothHands(){
-        if(dealer.getDealerCardSize() == 2){
-            dealer.printBJStartHand();
-        }
-        else{
-            dealer.printHand();
-        }
+        dealer.printHand();
         player.printHand();
     }
 
@@ -208,8 +241,10 @@ public class Blackjack {
     -----------------------------------------------------------------------------------------------------------------
      */
 
+    //player is given options to hit, stand, double down, and split if possible
     private void playerTurn() {
-        while (!hasLost() && choice !=3) {
+        choice = 0;
+        while (!playerGoneOver() && choice !=3) {
             askPlayerOptions();
             choice = scan.nextInt();
             choiceCheck();
@@ -221,6 +256,27 @@ public class Blackjack {
         }
     }
 
+    //dealer hits until 17 or more or bust is reached
+    private void dealerTurn(){
+        int count = 0;
+        System.out.println("Dealer Turn");
+        System.out.println("-----------------------------------------------------------------------------------------\n");
+        while (!dealerGoneOver() && dealer.getDealerNumValue()<17){
+            dealerHit();
+            count++;
+            compareHands();
+        }
+        if(count == 0) {
+            printBothHands();
+        }
+    }
+
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Play method that runs all of blackjack
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
     public void play(){
         BettingSystem.setMaxBet(500);
         shuffleDeck();
@@ -228,10 +284,15 @@ public class Blackjack {
         if(BettingSystem.getChips()>0){
             System.out.println("\nWelcome to the blackjack table! I assume you know the rules.\nIf not...look em up!");
             System.out.println("---------------------------------------------------------------------------------------");
-            while(BettingSystem.getChips()>0){
-                BettingSystem.askBet();
+            BettingSystem.askBet();
+            while(BettingSystem.getChips()>0  && BettingSystem.getCurrentBet()>0){
                 dealStarters();
                 playerTurn();
+                if(!playerGoneOver()) {
+                    dealerTurn();
+                }
+                resetHands();
+                BettingSystem.askBet();
             }
         }
         else{
