@@ -2,20 +2,27 @@ import java.util.Scanner;
 
 public class Blackjack {
     Scanner scan = new Scanner(System.in);
-    private final CardDeck[] bjDeck; // array of 6 CardDeck objects that are shuffled
     private final Player player; //player object of player class
     private final Dealer dealer; //dealer object using blackjack specific methods
+
+    private final CardDeck[] bjDeck; // array of 4 CardDeck objects that are shuffled in respective decks
+    private final Card[] bjMixedDeck; //array of all 4 card decks shuffled into each other -- true shuffle
+    private final int MAX_CARDS = 209; //constant amount of cards in the 4 combined decks
     private int deckPointer; //current index of bjDeck that dealer is in 0-3
     private int cardPointer; //current index of card in current deck 0-51
+
     private int choice; //player choice of which blackjack play they would like to make
 
     //constructor
     public Blackjack(){
-        bjDeck = new CardDeck[] {new CardDeck(), new CardDeck(), new CardDeck(), new CardDeck()};
         player = new Player();
         dealer = new Dealer();
+
+        bjDeck = new CardDeck[] {new CardDeck(), new CardDeck(), new CardDeck(), new CardDeck()};
+        bjMixedDeck = new Card[MAX_CARDS];
         deckPointer = 0;
         cardPointer = 0;
+
         choice = 0;
     }
 
@@ -47,6 +54,26 @@ public class Blackjack {
     Utility methods for abstraction
     -----------------------------------------------------------------------------------------------------------------
      */
+
+    //fills mixedBjDeck with all cards from bjDeck but ture shuffled
+    private void shuffleMixedBjDeck() {
+        for (int i = 0; i < 4; i++) {
+            for (int x = 1; x <= 52; x++) {
+                bjMixedDeck[x + (bjMixedDeck.length - 1)] = bjDeck[i].getCard(x);
+            }
+        }
+    }
+
+    private void printMixedBjDeck(){
+        int count = 0;
+        for (Card c: bjMixedDeck){
+            System.out.print(c);
+            count++;
+            if(count % 26 == 0){
+                System.out.println();
+            }
+        }
+    }
 
     //updates deck and card pointers when a card is dealt
     private void updatePointers(){
@@ -280,6 +307,8 @@ public class Blackjack {
     public void play(){
         BettingSystem.setMaxBet(500);
         shuffleDeck();
+        shuffleMixedBjDeck();
+        printMixedBjDeck();
 
         if(BettingSystem.getChips()>0){
             System.out.println("\nWelcome to the blackjack table! I assume you know the rules.\nIf not...look em up!");
