@@ -77,6 +77,11 @@ public class Blackjack {
         return dealer.getDealerNumValue()>21;
     }
 
+    //checks to see if dealer cards are greater than player cards
+    private boolean dealerIsGreater(){
+        return dealer.getDealerNumValue()>player.getPlayerNumValue();
+    }
+
     //Reset hands after round
     private void resetHands(){
         for(int x=player.getPlayerCardSize()-1; x>=0; x--) {
@@ -120,28 +125,25 @@ public class Blackjack {
     }
 
     //gives the dealer a card
-    private void dealerHit(){
+    private void dealerHit() {
         dealDealerCard();
         printBothHands();
         System.out.println("-----------------------------------------------------------------------------------------");
-        if(dealerGoneOver()){
-            BettingSystem.win();
-        }
     }
+
 
     //compares both numerical values and decides who wins
     private void compareHands(){
-        if(dealer.getDealerNumValue()>player.getPlayerNumValue()){
+        if(dealer.getDealerNumValue()>player.getPlayerNumValue() && !dealerGoneOver()){
             BettingSystem.lose();
         }
-        else if(dealer.getDealerNumValue()<player.getPlayerNumValue()){
+        else if(dealer.getDealerNumValue()<player.getPlayerNumValue() || dealerGoneOver()){
             BettingSystem.win();
         }
         else{
             BettingSystem.tie();
         }
     }
-
 
     /*
     -----------------------------------------------------------------------------------------------------------------
@@ -261,13 +263,18 @@ public class Blackjack {
         int count = 0;
         System.out.println("Dealer Turn");
         System.out.println("-----------------------------------------------------------------------------------------\n");
-        while (!dealerGoneOver() && dealer.getDealerNumValue()<17){
-            dealerHit();
-            count++;
-            compareHands();
+        while (!dealerIsGreater()) {
+            if (!dealerGoneOver() && dealer.getDealerNumValue() < 17) {
+                dealerHit();
+                count++;
+            }
         }
         if(count == 0) {
             printBothHands();
+            compareHands();
+        }
+        else{
+            compareHands();
         }
     }
 
