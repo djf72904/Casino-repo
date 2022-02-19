@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 public class Blackjack {
@@ -7,7 +10,7 @@ public class Blackjack {
 
     private final CardDeck[] bjDeck; // array of 4 CardDeck objects that are shuffled in respective decks
     private final Card[] bjMixedDeck; //array of all 4 card decks shuffled into each other -- true shuffle
-    private final int MAX_CARDS = 209; //constant amount of cards in the 4 combined decks
+    private final int MAX_CARDS = 208; //constant amount of cards in the 4 combined decks
     private int deckPointer; //current index of bjDeck that dealer is in 0-3
     private int cardPointer; //current index of card in current deck 0-51
 
@@ -38,6 +41,20 @@ public class Blackjack {
             cd.printShuffled();
         }
     }
+
+    //utility method for testing that prints ture shuffled bj deck mixedBJDeck
+    private void printMixedBjDeck(){
+        int count = 0;
+        for (Card c: bjMixedDeck){
+            System.out.print("[" + c + "]" +" ");
+            count++;
+            //enters down after 26 cards
+            if(count % 26 == 0){
+                System.out.println();
+            }
+        }
+    }
+
     //utility method for testing. Can insert custom card
     private void dealDealerCard(Card customCard){
         dealer.addCard(customCard);
@@ -55,27 +72,29 @@ public class Blackjack {
     -----------------------------------------------------------------------------------------------------------------
      */
 
+    //shuffles all 4 decks in bjDeck
+    private void shuffleDeck(){
+        for(CardDeck cd: bjDeck) {
+            cd.setShuffledDeck();
+        }
+    }
+
     //fills mixedBjDeck with all cards from bjDeck but ture shuffled
     private void shuffleMixedBjDeck() {
-        for (int i = 0; i < 4; i++) {
-            for (int x = 1; x <= 52; x++) {
-                bjMixedDeck[x + (bjMixedDeck.length - 1)] = bjDeck[i].getCard(x);
-            }
+        //copies bjDeck into mixedBJDeck
+        shuffleDeck();
+        for (int x = 0; x < MAX_CARDS; x++) {
+            bjMixedDeck[x] = bjDeck[deckPointer].getCard(cardPointer);
+            updatePointers();
         }
+
+        //shuffles mixedBJDeck
+        List<Card> fullCardList = Arrays.asList(bjMixedDeck);
+        Collections.shuffle(fullCardList);
+        fullCardList.toArray(bjMixedDeck);
     }
 
-    private void printMixedBjDeck(){
-        int count = 0;
-        for (Card c: bjMixedDeck){
-            System.out.print(c);
-            count++;
-            if(count % 26 == 0){
-                System.out.println();
-            }
-        }
-    }
-
-    //updates deck and card pointers when a card is dealt
+    //updates deck and card pointers for transferring bjDeck into bjMixedDeck
     private void updatePointers(){
         if (cardPointer < 51) {
             cardPointer++;
@@ -83,9 +102,19 @@ public class Blackjack {
             deckPointer++;
             cardPointer = 0;
         } else {
-            shuffleDeck();
             deckPointer = 0;
             cardPointer = 0;
+        }
+    }
+
+    //updates card pointer to keep track of card when going through bjMixedDeck
+    private void updateCardPointer(){
+        if(cardPointer<MAX_CARDS-1){
+            cardPointer++;
+        }
+        else{
+            cardPointer = 0;
+            shuffleMixedBjDeck();
         }
     }
 
@@ -177,15 +206,15 @@ public class Blackjack {
      */
     //deals the player a card. if starting cards, cards 1 and 3 are dealt to player
     private void dealPlayerCard() {
-        player.addCard(bjDeck[deckPointer].getCard(cardPointer));
-        updatePointers();
+        player.addCard(bjMixedDeck[cardPointer]);
+        updateCardPointer();
         player.setNumValue();
     }
 
     //deals the dealer a card. if starting cards, cards 2 and 4 are dealt to player
     private void dealDealerCard() {
-        dealer.addCard(bjDeck[deckPointer].getCard(cardPointer));
-        updatePointers();
+        dealer.addCard(bjMixedDeck[cardPointer]);
+        updateCardPointer();
         dealer.setNumValue();
     }
 
@@ -203,13 +232,6 @@ public class Blackjack {
     Misc methods/Output methods
     -----------------------------------------------------------------------------------------------------------------
      */
-
-    //shuffles all 4 decks in bjDeck
-    private void shuffleDeck(){
-        for(CardDeck cd: bjDeck) {
-            cd.setShuffledDeck();
-        }
-    }
 
     //prints both bj hands for start, hiding the dealer's second card
     private void printBothStarterHands(){
@@ -306,9 +328,7 @@ public class Blackjack {
 
     public void play(){
         BettingSystem.setMaxBet(500);
-        shuffleDeck();
         shuffleMixedBjDeck();
-        printMixedBjDeck();
 
         if(BettingSystem.getChips()>0){
             System.out.println("\nWelcome to the blackjack table! I assume you know the rules.\nIf not...look em up!");
