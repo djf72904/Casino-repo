@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Blackjack {
     Scanner scan = new Scanner(System.in);
@@ -15,6 +16,8 @@ public class Blackjack {
     private int cardPointer; //current index of card in current deck 0-51
 
     private int choice; //player choice of which blackjack play they would like to make
+    private int amountHit; // amount of times player has hit
+    private boolean hasDD; //true if player has double downed. false if player has not
 
     //constructor
     public Blackjack(){
@@ -27,6 +30,8 @@ public class Blackjack {
         cardPointer = 0;
 
         choice = 0;
+        amountHit = 0;
+        hasDD = false;
     }
 
     /*
@@ -42,7 +47,7 @@ public class Blackjack {
         }
     }
 
-    //utility method for testing that prints ture shuffled bj deck mixedBJDeck
+    //utility method for testing that prints true shuffled bj deck mixedBJDeck
     private void printMixedBjDeck(){
         int count = 0;
         for (Card c: bjMixedDeck){
@@ -140,6 +145,8 @@ public class Blackjack {
 
     //Reset hands after round
     private void resetHands(){
+        hasDD = false;
+        amountHit = 0;
         for(int x=player.getPlayerCardSize()-1; x>=0; x--) {
             player.deleteCard();
         }
@@ -159,6 +166,7 @@ public class Blackjack {
     //when choice = 1 and player hits
     private void playerHit(){
         dealPlayerCard();
+        amountHit++;
         if(playerGoneOver()){
             printBothHands();
             BettingSystem.lose();
@@ -172,11 +180,13 @@ public class Blackjack {
     private void playerDoubleDown(){
         dealPlayerCard();
         BettingSystem.setCurrentBet(BettingSystem.getCurrentBet()*2);
-        System.out.println("New Bet: " + BettingSystem.getCurrentBet());
-        printBothStarterHands();
+        System.out.println("New Bet: " + BettingSystem.getCurrentBet() +"\n");
+        if(!playerGoneOver()) {
+            printBothStarterHands();
+        }
         if(playerGoneOver()){
+            printBothHands();
             BettingSystem.lose();
-            resetHands();
         }
     }
 
@@ -184,7 +194,6 @@ public class Blackjack {
     private void dealerHit() {
         dealDealerCard();
         printBothHands();
-        System.out.println("-----------------------------------------------------------------------------------------");
     }
 
 
@@ -206,6 +215,7 @@ public class Blackjack {
     Card dealing methods
     -----------------------------------------------------------------------------------------------------------------
      */
+
     //deals the player a card. if starting cards, cards 1 and 3 are dealt to player
     private void dealPlayerCard() {
         player.addCard(bjMixedDeck[cardPointer]);
@@ -245,6 +255,7 @@ public class Blackjack {
     private void printBothHands(){
         dealer.printHand();
         player.printHand();
+        System.out.println("----------------------------------------------------------------------------------------\n");
     }
 
     //asks player what blackjack play they would like to make. double down and split are available
@@ -254,6 +265,11 @@ public class Blackjack {
             System.out.println("\t----------------------------------------------------------");
             System.out.println("\t|    (1)Hit    (2)Double Down    (3)Stand    (4)Split    |");
             System.out.println("\t----------------------------------------------------------");
+        }
+        else if(amountHit>0){
+            System.out.println("\t-----------------------------");
+            System.out.println("\t|    (1)Hit    (3)Stand     |");
+            System.out.println("\t-----------------------------");
         }
         else{
             System.out.println("\t-----------------------------------------------");
@@ -295,7 +311,7 @@ public class Blackjack {
     //player is given options to hit, stand, double down, and split if possible
     private void playerTurn() {
         choice = 0;
-        while (!playerGoneOver() && choice !=3) {
+        while (!playerGoneOver() && choice !=3 && !hasDD) {
             askPlayerOptions();
             choice = scan.nextInt();
             choiceCheck();
@@ -303,6 +319,7 @@ public class Blackjack {
                 playerHit();
             } else if (choice == 2) {
                 playerDoubleDown();
+                hasDD = true;
             }
         }
     }
@@ -310,15 +327,31 @@ public class Blackjack {
     //dealer hits until 17 or more or bust is reached
     private void dealerTurn(){
         int count = 0;
-        System.out.println("Dealer Turn");
+        System.out.println("\nDealer Turn");
         System.out.println("-----------------------------------------------------------------------------------------\n");
+        printBothHands();
         while (!dealerIsGreater()) {
             if (!dealerGoneOver() && dealer.getDealerNumValue() < 17) {
+                //delays dealer hits
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 dealerHit();
                 count++;
             }
+            else{
+                break;
+            }
         }
         if(count == 0) {
+            //delays print
+            try {
+                TimeUnit.MILLISECONDS.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             printBothHands();
             compareHands();
         }
@@ -341,7 +374,8 @@ public class Blackjack {
             System.out.println("\nWelcome to the blackjack table! I assume you know the rules.\nIf not...look em up!");
             System.out.println("---------------------------------------------------------------------------------------");
             BettingSystem.askBet();
-            while(BettingSystem.getChips()>0  && BettingSystem.getCurrentBet()>0){
+
+            while(BettingSystem.getChips()>0  && (BettingSystem.getCurrentBet() != -1)){
                 dealStarters();
                 playerTurn();
                 if(!playerGoneOver()) {
@@ -361,4 +395,4 @@ public class Blackjack {
         bj.play();
     }
 
-}// end Blackjack
+}

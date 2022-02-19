@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class GameSystem {
 
-    public static void main (String[]args){
+    public static void main (String[]args) throws InterruptedException {
         start();
     }
 
@@ -10,7 +10,7 @@ public class GameSystem {
 
 
 
-    private static void start(){
+    private static void start() throws InterruptedException {
         Scanner scan = new Scanner(System.in);
         Blackjack bj = new Blackjack(); //Creation of blackjack game
         String gameList = "List of Games:\n(1)Blackjack";
