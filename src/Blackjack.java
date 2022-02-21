@@ -77,6 +77,16 @@ public class Blackjack {
     -----------------------------------------------------------------------------------------------------------------
      */
 
+    //delays next action by 1 second
+    private void delayAction(){
+        try {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     //shuffles all 4 decks in bjDeck
     private void shuffleDeck(){
         for(CardDeck cd: bjDeck) {
@@ -184,14 +194,16 @@ public class Blackjack {
         if(!playerGoneOver()) {
             printBothStarterHands();
         }
-        if(playerGoneOver()){
+        else{
             printBothHands();
+            delayAction();
             BettingSystem.lose();
         }
     }
 
     //gives the dealer a card
     private void dealerHit() {
+        delayAction();
         dealDealerCard();
         printBothHands();
     }
@@ -200,12 +212,15 @@ public class Blackjack {
     //compares both numerical values and decides who wins
     private void compareHands(){
         if(dealer.getDealerNumValue()>player.getPlayerNumValue() && !dealerGoneOver()){
+            delayAction();
             BettingSystem.lose();
         }
         else if(dealer.getDealerNumValue()<player.getPlayerNumValue() || dealerGoneOver()){
+            delayAction();
             BettingSystem.win();
         }
         else{
+            delayAction();
             BettingSystem.tie();
         }
     }
@@ -247,12 +262,14 @@ public class Blackjack {
 
     //prints both bj hands for start, hiding the dealer's second card
     private void printBothStarterHands(){
+        delayAction();
         dealer.printBJStartHand();
         player.printHand();
     }
 
     //prints both hands with full transparency
     private void printBothHands(){
+        delayAction();
         dealer.printHand();
         player.printHand();
         System.out.println("----------------------------------------------------------------------------------------\n");
@@ -260,6 +277,7 @@ public class Blackjack {
 
     //asks player what blackjack play they would like to make. double down and split are available
     private void askPlayerOptions(){
+        delayAction();
         System.out.println("Please type in the number of what action you would like to do.");
         if(canSplit()) {
             System.out.println("\t----------------------------------------------------------");
@@ -332,12 +350,6 @@ public class Blackjack {
         printBothHands();
         while (!dealerIsGreater()) {
             if (!dealerGoneOver() && dealer.getDealerNumValue() < 17) {
-                //delays dealer hits
-                try {
-                    TimeUnit.MILLISECONDS.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 dealerHit();
                 count++;
             }
@@ -346,12 +358,6 @@ public class Blackjack {
             }
         }
         if(count == 0) {
-            //delays print
-            try {
-                TimeUnit.MILLISECONDS.sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             printBothHands();
             compareHands();
         }
