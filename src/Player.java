@@ -30,6 +30,16 @@ public class Player {
         return playerCards.get(i);
     }
 
+    //sees if player cards have a card that matches parameter
+    public boolean containsCard(Card match){
+        for(Card c: playerCards){
+            if(c.equals(match)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
     -----------------------------------------------------------------------------------------------------------------
     Instance Variables manipulation
@@ -88,6 +98,12 @@ public class Player {
         player.addCard(new Card(1, 'C'));
         player.addCard(new Card(11, 'H'));
         player.printHand();
+        if(player.containsCard(new Card(1, 'C'))){
+            System.out.println("Has Card");
+        }
+        else{
+            System.out.println("Does not have card");
+        }
     }
 }
 

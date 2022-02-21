@@ -1,7 +1,4 @@
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Blackjack {
@@ -227,6 +224,56 @@ public class Blackjack {
 
     /*
     -----------------------------------------------------------------------------------------------------------------
+    Ace Checks
+    -----------------------------------------------------------------------------------------------------------------=
+    */
+
+    //checks deck that is inputted to see if there is an ace in any position
+    private boolean playerHasAce(){
+        boolean hasAce = false;
+        if(player.containsCard(new Card(1, 'H'))){
+            hasAce = true;
+        }
+        else if(player.containsCard(new Card(1, 'A'))){
+            hasAce = true;
+        }
+        else if(player.containsCard(new Card(1, 'C'))){
+            hasAce = true;
+        }
+        else if(player.containsCard(new Card(1, 'D'))){
+            hasAce = true;
+        }
+        return hasAce;
+    }
+    private boolean dealerHasAce(){
+        boolean hasAce = false;
+        if(dealer.containsCard(new Card(1, 'H'))){
+            hasAce = true;
+        }
+        else if(dealer.containsCard(new Card(1, 'A'))){
+            hasAce = true;
+        }
+        else if(dealer.containsCard(new Card(1, 'C'))){
+            hasAce = true;
+        }
+        else if(dealer.containsCard(new Card(1, 'D'))){
+            hasAce = true;
+        }
+        return hasAce;
+    }
+
+
+    //turns ace from 11 to 1
+    private void playerAceDowngrade(){
+
+    }
+    private void dealerAceDowngrade(){
+
+    }
+
+
+    /*
+    -----------------------------------------------------------------------------------------------------------------
     Card dealing methods
     -----------------------------------------------------------------------------------------------------------------
      */
@@ -295,30 +342,6 @@ public class Blackjack {
             System.out.println("\t-----------------------------------------------");
         }
     }
-
-
-
-    /*
-    private boolean hasAce(ArrayList<Card> cards){
-        for (Card card : cards) {
-            if (card.getNumber() == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-
-    private void aceDowngrade(ArrayList<Card> cards){
-        if(hasAce(cards) && getNumValue(cards)>21){
-            if(cards.equals(dealerNumValue)){
-                dealerNumValue -= 11;
-            }
-            if(cards.equals)
-        }
-    }
-     */
 
     /*
     -----------------------------------------------------------------------------------------------------------------
