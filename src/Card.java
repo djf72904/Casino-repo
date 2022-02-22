@@ -44,7 +44,7 @@ public class Card {
     //allows the card to be printed out with number or letter and suit
     public String toString() {
         //changes 11 to J, 12 to Q, and 13 to K.
-        if (this.number==1)
+        if (this.number==1 || this.number==-1)
             return "A"+this.suit;
         else if(this.number==11)
             return "J"+this.suit;

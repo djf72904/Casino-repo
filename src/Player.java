@@ -40,6 +40,16 @@ public class Player {
         return false;
     }
 
+    //finds the index of card that matches parameter. returns -1 if card is not in array
+    public int getIndexOfCard(Card match) {
+        if (containsCard(match)) {
+            return playerCards.indexOf(match);
+        }
+        else {
+            return -1;
+        }
+    }
+
     /*
     -----------------------------------------------------------------------------------------------------------------
     Instance Variables manipulation
@@ -61,13 +71,22 @@ public class Player {
     public void setNumValue(){
         playerNumValue = 0;
         for(Card card: playerCards){
-            if(card.getNumber() == 1){
+            if(card.getNumber() == -1){
+                playerNumValue += 1;
+            }
+            else if(card.getNumber() == 1){
                 playerNumValue += 11;
             }
             else {
                 playerNumValue += Math.min (card.getNumber(), 10);
             }
         }
+    }
+
+    public void changeCardNumValue(int index, int newValue){
+        char suit = playerCards.get(index).getSuit();
+        playerCards.add(index, new Card(newValue, suit));
+        playerCards.remove(index+1);
     }
 
     /*
@@ -95,14 +114,16 @@ public class Player {
     //main method used for testing
     public static void main(String[]args){
         Player player = new Player();
-        player.addCard(new Card(1, 'C'));
+        player.addCard(new Card(2, 'C'));
         player.addCard(new Card(11, 'H'));
         player.printHand();
         if(player.containsCard(new Card(1, 'C'))){
             System.out.println("Has Card");
+            System.out.println("index of Ace : " + player.getIndexOfCard(new Card(1, 'C')));
         }
         else{
             System.out.println("Does not have card");
+            System.out.println("index of Ace : " + player.getIndexOfCard(new Card(1, 'C')));
         }
     }
 }

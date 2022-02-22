@@ -12,6 +12,8 @@ public class Blackjack {
     private int deckPointer; //current index of bjDeck that dealer is in 0-3
     private int cardPointer; //current index of card in current deck 0-51
 
+    private int indexOfAce; //index of an ace in hand
+
     private int choice; //player choice of which blackjack play they would like to make
     private int amountHit; // amount of times player has hit
     private boolean hasDD; //true if player has double downed. false if player has not
@@ -25,6 +27,8 @@ public class Blackjack {
         bjMixedDeck = new Card[MAX_CARDS];
         deckPointer = 0;
         cardPointer = 0;
+
+        indexOfAce = -1;
 
         choice = 0;
         amountHit = 0;
@@ -231,17 +235,22 @@ public class Blackjack {
     //checks deck that is inputted to see if there is an ace in any position
     private boolean playerHasAce(){
         boolean hasAce = false;
+        indexOfAce = -1;
         if(player.containsCard(new Card(1, 'H'))){
             hasAce = true;
+            int indexOfAce = player.getIndexOfCard(new Card(1, 'H'));
         }
-        else if(player.containsCard(new Card(1, 'A'))){
+        else if(player.containsCard(new Card(1, 'S'))){
             hasAce = true;
+            int indexOfAce = player.getIndexOfCard(new Card(1, 'S'));
         }
         else if(player.containsCard(new Card(1, 'C'))){
             hasAce = true;
+            int indexOfAce = player.getIndexOfCard(new Card(1, 'C'));
         }
         else if(player.containsCard(new Card(1, 'D'))){
             hasAce = true;
+            int indexOfAce = player.getIndexOfCard(new Card(1, 'D'));
         }
         return hasAce;
     }
@@ -250,7 +259,7 @@ public class Blackjack {
         if(dealer.containsCard(new Card(1, 'H'))){
             hasAce = true;
         }
-        else if(dealer.containsCard(new Card(1, 'A'))){
+        else if(dealer.containsCard(new Card(1, 'S'))){
             hasAce = true;
         }
         else if(dealer.containsCard(new Card(1, 'C'))){
@@ -265,7 +274,9 @@ public class Blackjack {
 
     //turns ace from 11 to 1
     private void playerAceDowngrade(){
-
+        if(playerHasAce() && player.getPlayerNumValue()>21){
+            player.changeCardNumValue(indexOfAce, -1);
+        }
     }
     private void dealerAceDowngrade(){
 
