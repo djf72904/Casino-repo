@@ -49,6 +49,19 @@ public class Dealer {
         return false;
     }
 
+    //finds the index of card that matches parameter. returns -1 if card is not in array
+    public int getIndexOfCard(Card match) {
+        int index = 0;
+        for (Card c : dealerCards) {
+            if (c.equals(match)) {
+                return index;
+            } else {
+                index++;
+            }
+        }
+        return -1;
+    }
+
     /*
     -----------------------------------------------------------------------------------------------------------------
     Instance variable manipulation
@@ -70,7 +83,10 @@ public class Dealer {
     public void setNumValue(){
         dealerNumValue = 0;
         for (Card card: dealerCards){
-            if(card.getNumber() == 1){
+            if(card.getNumber() ==-1){
+                dealerNumValue +=1;
+            }
+            else if(card.getNumber() == 1){
                 dealerNumValue += 11;
             }
             else {
@@ -78,6 +94,15 @@ public class Dealer {
             }
         }
     }
+
+    //changes num value of specific card at index
+    public void changeCardNumValue(int index, int newValue){
+        char suit = dealerCards.get(index).getSuit();
+        dealerCards.add(index, new Card(newValue, suit));
+        dealerCards.remove(index+1);
+        setNumValue();
+    }
+
     /*
     -----------------------------------------------------------------------------------------------------------------
     Blackjack specific methods
@@ -86,8 +111,13 @@ public class Dealer {
 
     //sets dealerStartValue to the value of the first Card in dealerCards in order to keep second card hidden from player
     private void setDealerStartValue(){
-        boolean hasAceIn2 = dealerCards.get(1).getNumber() == 1;
-        if(hasAceIn2){
+        boolean hasAceIn1 = dealerCards.get(0).getNumber() == 1 || dealerCards.get(0).getNumber() == -1;
+        boolean hasAceIn2 = dealerCards.get(1).getNumber() == 1 || dealerCards.get(1).getNumber() == -1;
+
+        if(hasAceIn1 && hasAceIn2){
+            dealerStartValue = 11;
+        }
+        else if(hasAceIn2){
             dealerStartValue = dealerNumValue - 11;
         }
         else if(dealerCards.get(1).getNumber()>10){

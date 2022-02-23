@@ -30,7 +30,7 @@ public class Card {
     -----------------------------------------------------------------------------------------------------------------
      */
 
-    //equals method that checks if two cards are equal
+    //equals method that checks if two cards are equal in number and suit
     public boolean equals(Card c){
         return c.getNumber() == this.number && c.getSuit() == this.suit;
     }

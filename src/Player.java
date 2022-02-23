@@ -42,12 +42,15 @@ public class Player {
 
     //finds the index of card that matches parameter. returns -1 if card is not in array
     public int getIndexOfCard(Card match) {
-        if (containsCard(match)) {
-            return playerCards.indexOf(match);
+        int index = 0;
+        for (Card c : playerCards) {
+            if (c.equals(match)) {
+                return index;
+            } else {
+                index++;
+            }
         }
-        else {
-            return -1;
-        }
+        return -1;
     }
 
     /*
@@ -64,7 +67,6 @@ public class Player {
     //adds card on end of playerCards
     public void addCard(Card c){
         playerCards.add(c);
-        setNumValue();
     }
 
     //sets the numerical value of cards in playerCards. NOTE: face cards are worth 10 and aces are worth 11 in this implementation
@@ -83,10 +85,12 @@ public class Player {
         }
     }
 
+    //changes num value of specific card at index
     public void changeCardNumValue(int index, int newValue){
         char suit = playerCards.get(index).getSuit();
         playerCards.add(index, new Card(newValue, suit));
         playerCards.remove(index+1);
+        setNumValue();
     }
 
     /*

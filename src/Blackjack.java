@@ -65,11 +65,11 @@ public class Blackjack {
     private void dealDealerCard(Card customCard){
         dealer.addCard(customCard);
         dealer.setNumValue();
+        dealerAceDowngrade();
     }
     //utility method for testing. Can insert custom card
     private void dealPlayerCard(Card customCard){
         player.addCard(customCard);
-        updatePointers();
         player.setNumValue();
         playerAceDowngrade();
     }
@@ -240,35 +240,40 @@ public class Blackjack {
         indexOfAce = -1;
         if(player.containsCard(new Card(1, 'H'))){
             hasAce = true;
-            int indexOfAce = player.getIndexOfCard(new Card(1, 'H'));
+            indexOfAce = player.getIndexOfCard(new Card(1, 'H'));
         }
         else if(player.containsCard(new Card(1, 'S'))){
             hasAce = true;
-            int indexOfAce = player.getIndexOfCard(new Card(1, 'S'));
+            indexOfAce = player.getIndexOfCard(new Card(1, 'S'));
         }
         else if(player.containsCard(new Card(1, 'C'))){
             hasAce = true;
-            int indexOfAce = player.getIndexOfCard(new Card(1, 'C'));
+            indexOfAce = player.getIndexOfCard(new Card(1, 'C'));
         }
         else if(player.containsCard(new Card(1, 'D'))){
             hasAce = true;
-            int indexOfAce = player.getIndexOfCard(new Card(1, 'D'));
+            indexOfAce = player.getIndexOfCard(new Card(1, 'D'));
         }
         return hasAce;
     }
     private boolean dealerHasAce(){
         boolean hasAce = false;
+        indexOfAce = -1;
         if(dealer.containsCard(new Card(1, 'H'))){
             hasAce = true;
+            indexOfAce = dealer.getIndexOfCard(new Card(1, 'H'));
         }
         else if(dealer.containsCard(new Card(1, 'S'))){
             hasAce = true;
+            indexOfAce = dealer.getIndexOfCard(new Card(1, 'S'));
         }
         else if(dealer.containsCard(new Card(1, 'C'))){
             hasAce = true;
+            indexOfAce = dealer.getIndexOfCard(new Card(1, 'C'));
         }
         else if(dealer.containsCard(new Card(1, 'D'))){
             hasAce = true;
+            indexOfAce = dealer.getIndexOfCard(new Card(1, 'D'));
         }
         return hasAce;
     }
@@ -276,15 +281,15 @@ public class Blackjack {
 
     //turns ace from 11 to 1
     private void playerAceDowngrade(){
-        if(playerHasAce() && player.getPlayerNumValue()>21){
+        if(player.getPlayerNumValue()>21 && playerHasAce()){
             player.changeCardNumValue(indexOfAce, -1);
-            player.setNumValue();
         }
     }
     private void dealerAceDowngrade(){
-
+        if(dealer.getDealerNumValue()>21 && dealerHasAce()){
+            dealer.changeCardNumValue(indexOfAce, -1);
+        }
     }
-
 
     /*
     -----------------------------------------------------------------------------------------------------------------
@@ -305,13 +310,14 @@ public class Blackjack {
         dealer.addCard(bjMixedDeck[cardPointer]);
         updateCardPointer();
         dealer.setNumValue();
+        dealerAceDowngrade();
     }
 
     //deals cards to player and dealer at start of round
     private void dealStarters(){
         for(int x=0; x<2; x++){
             dealPlayerCard(new Card(1, 'H'));
-            dealDealerCard();
+            dealDealerCard(new Card(1, 'D'));
         }
         printBothStarterHands();
     }
