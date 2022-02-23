@@ -69,7 +69,9 @@ public class Blackjack {
     //utility method for testing. Can insert custom card
     private void dealPlayerCard(Card customCard){
         player.addCard(customCard);
+        updatePointers();
         player.setNumValue();
+        playerAceDowngrade();
     }
 
     /*
@@ -276,6 +278,7 @@ public class Blackjack {
     private void playerAceDowngrade(){
         if(playerHasAce() && player.getPlayerNumValue()>21){
             player.changeCardNumValue(indexOfAce, -1);
+            player.setNumValue();
         }
     }
     private void dealerAceDowngrade(){
@@ -294,6 +297,7 @@ public class Blackjack {
         player.addCard(bjMixedDeck[cardPointer]);
         updateCardPointer();
         player.setNumValue();
+        playerAceDowngrade();
     }
 
     //deals the dealer a card. if starting cards, cards 2 and 4 are dealt to player
@@ -306,7 +310,7 @@ public class Blackjack {
     //deals cards to player and dealer at start of round
     private void dealStarters(){
         for(int x=0; x<2; x++){
-            dealPlayerCard();
+            dealPlayerCard(new Card(1, 'H'));
             dealDealerCard();
         }
         printBothStarterHands();
