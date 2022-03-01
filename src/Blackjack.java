@@ -315,9 +315,10 @@ public class Blackjack {
 
     //deals cards to player and dealer at start of round
     private void dealStarters(){
-        for(int x=0; x<2; x++){
-            dealPlayerCard(new Card(1, 'H'));
-            dealDealerCard(new Card(1, 'D'));
+
+        for(int x=0; x<2; x++) {
+            dealPlayerCard();
+            dealDealerCard();
         }
         printBothStarterHands();
     }
