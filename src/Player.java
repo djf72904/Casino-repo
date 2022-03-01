@@ -4,10 +4,18 @@ public class Player {
     private final ArrayList <Card> playerCards; //array list of current cards held by player
     private int playerNumValue; //numerical value of cards player has
 
+    private final ArrayList<Card> split1; //array list of first split deck
+    private final ArrayList<Card> split2; //array list of first split deck
+    private final ArrayList<Card> split3; //array list of first split deck
+
     //constructor
     public Player(){
         playerCards = new ArrayList<>();
         playerNumValue = 0;
+
+        split1 = new ArrayList<>();
+        split2 = new ArrayList<>();
+        split3 = new ArrayList<>();
     }
     /*
     -----------------------------------------------------------------------------------------------------------------
@@ -91,6 +99,46 @@ public class Player {
         playerCards.add(index, new Card(newValue, suit));
         playerCards.remove(index+1);
         setNumValue();
+    }
+
+    /*
+    -----------------------------------------------------------------------------------------------------------------
+    Blackjack specific methods
+    -----------------------------------------------------------------------------------------------------------------
+     */
+
+    //initializes 1st split deck
+    public void initSplit1(){
+        split1.add(playerCards.get(1));
+        playerCards.remove(1);
+    }
+
+    //initializes 2nd split deck
+    public void initSplit2(){
+        if(playerCards.get(0).equals(playerCards.get(1))){
+            split2.add(playerCards.get(1));
+            playerCards.remove(1);
+        }
+        else{
+            split2.add(split1.get(1));
+            split1.remove(1);
+        }
+    }
+
+    //initializes 3rd split deck
+    public void initSplit3(){
+        if(playerCards.get(0).equals(playerCards.get(1))){
+            split3.add(playerCards.get(1));
+            playerCards.remove(1);
+        }
+        else if(split1.get(0).equals(split1.get(1))){
+            split3.add(split1.get(1));
+            split1.remove(1);
+        }
+        else{
+            split3.add(split2.get(1));
+            split2.remove(1);
+        }
     }
 
     /*
